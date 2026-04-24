@@ -2,8 +2,14 @@ locals {
   is_org_scoped = var.organization_id != ""
   sa_project    = coalesce(var.project_id, try(data.google_project.default[0].project_id, null))
 
-  # Deduplicated list of all project IDs (SA project is always included)
-  all_project_ids = distinct(concat([local.sa_project], var.project_ids))
+  discovered_project_ids = try([for p in data.google_projects.all[0].projects : p.project_id], [])
+
+  # When project_ids is empty, discover all active projects visible to the caller.
+  # SA project is always included.
+  all_project_ids = distinct(concat(
+    [local.sa_project],
+    length(var.project_ids) > 0 ? var.project_ids : local.discovered_project_ids,
+  ))
 
   # Roles from API
   org_roles     = try(local.onboarding_config.gcpConfig.organizationRoles, [])

@@ -34,7 +34,7 @@ variable "organization_id" {
 }
 
 variable "project_ids" {
-  description = "List of GCP project IDs to enable APIs and bind roles in. When empty in project-scoped mode, only the service account project is used."
+  description = "List of GCP project IDs to enable APIs and bind roles in. When empty, all active projects visible to the caller are discovered automatically."
   type        = list(string)
   default     = []
 }

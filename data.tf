@@ -2,6 +2,11 @@ data "google_project" "default" {
   count = var.project_id == null ? 1 : 0
 }
 
+data "google_projects" "all" {
+  count  = length(var.project_ids) == 0 ? 1 : 0
+  filter = "lifecycleState:ACTIVE"
+}
+
 data "http" "onboarding_config" {
   url = "${var.castai_api_url}/inventory/v1beta/organizations/${var.castai_organization_id}/cloud-asset-integrations:getOnboardingConfig?provider=GCP&scope=${var.scope}"
 
@@ -17,10 +22,10 @@ check "onboarding_config_status" {
   }
 }
 
-check "scope_requires_projects" {
+check "has_projects" {
   assert {
-    condition     = var.organization_id != "" || length(local.all_project_ids) > 0
-    error_message = "Either organization_id must be set (org-scoped) or project_ids must be non-empty (project-scoped)."
+    condition     = length(local.all_project_ids) > 0
+    error_message = "No projects found. Either set project_ids explicitly or ensure the caller has permission to list projects."
   }
 }
 
