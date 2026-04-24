@@ -5,9 +5,6 @@ on:
     branches:
       - main
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   terraform_validation:
     strategy:
@@ -17,7 +14,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
@@ -50,7 +47,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       - name: Setup terraform-docs
         run: |
@@ -61,8 +58,7 @@ jobs:
 
       - name: Check docs are up to date
         run: |
-          set -euo pipefail
-          make generate-doc 2>&1
+          make generate-doc
           git diff README.md
           if [ -n "$(git status --porcelain README.md)" ]; then
             echo "ERROR: README.md is out of date. Run 'make generate-doc' locally and commit the changes."
@@ -75,10 +71,10 @@ jobs:
 
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       - name: Cache plugin dir
-        uses: actions/cache@v4
+        uses: actions/cache@v3
         with:
           path: ~/.tflint.d/plugins
           key: tflint-${{ hashFiles('.tflint.hcl') }}
