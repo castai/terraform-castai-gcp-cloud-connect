@@ -8,7 +8,7 @@
 
 # Terraform module for GCP Cloud Connect onboarding
 
-This Terraform module onboards GCP projects and organizations to [Cast AI Cloud Connect](https://cast.ai/) for cloud asset discovery. It replaces the shell-based onboarding script with a declarative, auditable, and version-controlled alternative.
+This Terraform module onboards GCP projects and organizations to [Cast AI Cloud Connect](https://cast.ai/) for cloud asset discovery. It is a declarative, auditable, and version-controlled alternative to the shell-based onboarding script.
 
 ## What it does
 
