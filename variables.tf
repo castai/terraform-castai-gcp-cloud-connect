@@ -46,7 +46,7 @@ variable "billing_account_ids" {
 }
 
 variable "enable_project_apis" {
-  description = "Whether to enable required GCP APIs (compute, serviceusage, etc.) in discovered projects. Disable if APIs are managed elsewhere."
+  description = "If true, the module will enable the necessary APIs for the projects. Defaults to false assuming that APIs are managed elsewhere not to create noise in the plan."
   type        = bool
   default     = false
 }
