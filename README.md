@@ -105,6 +105,18 @@ module "castai_gcp_integration" {
 }
 ```
 
+## Known issues
+
+**"Provider produced inconsistent result after apply" on integration update**
+
+When changing fields like `integration_name` or settings, `terraform apply` may report:
+
+```
+Error: Provider produced inconsistent result after apply
+```
+
+This is a false positive caused by a [bug in the restapi provider](https://github.com/Mastercard/terraform-provider-restapi/pull/359) where the `Update` function doesn't respect `ignore_all_server_changes`. The integration is actually updated correctly on the API side. Running `terraform plan` again will show no pending changes.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
