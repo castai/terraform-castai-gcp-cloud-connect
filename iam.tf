@@ -18,7 +18,7 @@ resource "google_project_service" "required" {
 resource "google_service_account" "castai_discovery" {
   account_id   = var.service_account_name
   display_name = "Cast AI Cloud Assets Discovery"
-  project      = var.project_id
+  project      = local.sa_project
 
   depends_on = [google_project_service.required]
 }
@@ -69,7 +69,7 @@ resource "google_project_iam_custom_role" "castai_discovery" {
   count = local.has_custom_role && !local.is_org_scoped ? 1 : 0
 
   role_id     = var.custom_role_id
-  project     = var.project_id
+  project     = local.sa_project
   title       = "Cast AI Discovery - scope ${var.scope}"
   description = "Custom role for Cast AI to discover GCP resources - scope ${var.scope}"
   permissions = local.custom_role_project_permissions

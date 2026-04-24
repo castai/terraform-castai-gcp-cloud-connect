@@ -10,7 +10,7 @@ output "service_account_id" {
 
 output "integration_id" {
   description = "ID of the Cast AI cloud asset integration"
-  value       = jsondecode(restapi_object.castai_integration.api_response).id
+  value       = restapi_object.castai_integration.id
 }
 
 output "is_org_scoped" {

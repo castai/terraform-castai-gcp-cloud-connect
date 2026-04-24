@@ -1,3 +1,7 @@
+data "google_project" "default" {
+  count = var.project_id == null ? 1 : 0
+}
+
 data "http" "onboarding_config" {
   url = "${var.castai_api_url}/inventory/v1beta/organizations/${var.castai_organization_id}/cloud-asset-integrations:getOnboardingConfig?provider=GCP&scope=${var.scope}"
 

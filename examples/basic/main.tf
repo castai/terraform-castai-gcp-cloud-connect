@@ -8,7 +8,7 @@ module "castai_gcp_integration" {
   castai_api_key         = var.castai_api_key
   castai_organization_id = var.castai_organization_id
 
-  project_id  = var.gcp_project_id
+  # project_id defaults to the google provider's project
   project_ids = [var.gcp_project_id]
   scope       = "ALL"
 

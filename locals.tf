@@ -1,8 +1,9 @@
 locals {
   is_org_scoped = var.organization_id != ""
+  sa_project    = coalesce(var.project_id, try(data.google_project.default[0].project_id, null))
 
   # Deduplicated list of all project IDs (SA project is always included)
-  all_project_ids = distinct(concat([var.project_id], var.project_ids))
+  all_project_ids = distinct(concat([local.sa_project], var.project_ids))
 
   # Roles from API
   org_roles     = try(local.onboarding_config.gcpConfig.organizationRoles, [])
@@ -26,13 +27,13 @@ locals {
     "serviceusage.googleapis.com",
   ])
 
-  other_project_ids = [for p in local.all_project_ids : p if p != var.project_id]
+  other_project_ids = [for p in local.all_project_ids : p if p != local.sa_project]
 
   all_project_api_pairs = merge(
     {
       for api in local.sa_project_apis :
-      "${var.project_id}/${api}" => {
-        project = var.project_id
+      "${local.sa_project}/${api}" => {
+        project = local.sa_project
         service = api
       }
     },

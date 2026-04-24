@@ -22,8 +22,9 @@ variable "integration_name" {
 }
 
 variable "project_id" {
-  description = "GCP project ID where the service account will be created"
+  description = "GCP project ID where the service account will be created. Defaults to the google provider's configured project."
   type        = string
+  default     = null
 }
 
 variable "organization_id" {
