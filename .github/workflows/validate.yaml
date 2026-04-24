@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   terraform_validation:
     strategy:
@@ -14,7 +17,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
@@ -47,13 +50,14 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup terraform-docs
-        uses: jaxxstorm/action-install-gh-release@v1
-        with:
-          repo: terraform-docs/terraform-docs
-          tag: v0.19.0
+        run: |
+          curl -sSLo terraform-docs.tar.gz https://github.com/terraform-docs/terraform-docs/releases/download/v0.19.0/terraform-docs-v0.19.0-linux-amd64.tar.gz
+          tar -xzf terraform-docs.tar.gz terraform-docs
+          sudo mv terraform-docs /usr/local/bin/
+          terraform-docs --version
 
       - name: Check docs are up to date
         run: |
@@ -69,17 +73,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-        name: Checkout source code
+      - name: Checkout source code
+        uses: actions/checkout@v5
 
-      - uses: actions/cache@v3
-        name: Cache plugin dir
+      - name: Cache plugin dir
+        uses: actions/cache@v4
         with:
           path: ~/.tflint.d/plugins
           key: tflint-${{ hashFiles('.tflint.hcl') }}
 
-      - uses: terraform-linters/setup-tflint@v1
-        name: Setup TFLint
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v1
         with:
           tflint_version: v0.60.0
 
