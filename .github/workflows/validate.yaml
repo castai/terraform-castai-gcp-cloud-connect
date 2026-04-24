@@ -61,13 +61,14 @@ jobs:
 
       - name: Check docs are up to date
         run: |
-          make generate-doc
+          set -euo pipefail
+          make generate-doc 2>&1
+          git diff README.md
           if [ -n "$(git status --porcelain README.md)" ]; then
             echo "ERROR: README.md is out of date. Run 'make generate-doc' locally and commit the changes."
-            echo
-            git diff README.md
             exit 1
           fi
+          echo "README.md is up to date."
 
   tflint:
     runs-on: ubuntu-latest
