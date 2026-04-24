@@ -18,11 +18,11 @@ output "is_org_scoped" {
   value       = local.is_org_scoped
 }
 
-output "custom_role_id" {
-  description = "ID of the custom IAM role (null if not created)"
+output "custom_role_ids" {
+  description = "IDs of the custom IAM roles (empty if not created)"
   value = (
-    local.has_custom_role && local.is_org_scoped ? google_organization_iam_custom_role.castai_discovery[0].id :
-    local.has_custom_role && !local.is_org_scoped ? google_project_iam_custom_role.castai_discovery[0].id :
-    null
+    local.has_custom_role && local.is_org_scoped ? [for r in google_organization_iam_custom_role.castai_discovery : r.id] :
+    local.has_custom_role && !local.is_org_scoped ? [google_project_iam_custom_role.castai_discovery[0].id] :
+    []
   )
 }

@@ -2,6 +2,10 @@ data "google_project" "default" {
   count = var.project_id == null ? 1 : 0
 }
 
+data "google_organizations" "all" {
+  count = length(var.organization_ids) == 0 ? 1 : 0
+}
+
 data "google_projects" "all" {
   count  = length(var.project_ids) == 0 ? 1 : 0
   filter = "lifecycleState:ACTIVE"

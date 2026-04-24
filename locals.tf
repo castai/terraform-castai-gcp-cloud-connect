@@ -1,8 +1,11 @@
 locals {
-  is_org_scoped = var.organization_id != ""
-  sa_project    = coalesce(var.project_id, try(data.google_project.default[0].project_id, null))
+  sa_project = coalesce(var.project_id, try(data.google_project.default[0].project_id, null))
 
+  discovered_org_ids     = try([for o in data.google_organizations.all[0].organizations : o.org_id if o.lifecycle_state == "ACTIVE"], [])
   discovered_project_ids = try([for p in data.google_projects.all[0].projects : p.project_id], [])
+
+  all_org_ids   = length(var.organization_ids) > 0 ? var.organization_ids : local.discovered_org_ids
+  is_org_scoped = length(local.all_org_ids) > 0
 
   # When project_ids is empty, discover all active projects visible to the caller.
   # SA project is always included.
@@ -54,8 +57,11 @@ locals {
 
   # Org-level role bindings (org-scoped mode only)
   org_role_bindings = local.is_org_scoped ? {
-    for role in local.org_roles :
-    role => role
+    for pair in setproduct(local.all_org_ids, local.org_roles) :
+    "${pair[0]}/${pair[1]}" => {
+      org_id = pair[0]
+      role   = pair[1]
+    }
   } : {}
 
   # Project-level role bindings (project-scoped mode only)
@@ -67,7 +73,8 @@ locals {
     }
   } : {}
 
-  # Custom role project bindings (project-scoped mode with custom roles)
+  # Custom role bindings
+  custom_role_org_bindings     = local.has_custom_role && local.is_org_scoped ? toset(local.all_org_ids) : toset([])
   custom_role_project_bindings = local.has_custom_role && !local.is_org_scoped ? toset(local.all_project_ids) : toset([])
 
   # Billing account bindings (org-scoped only)

@@ -3,7 +3,7 @@
 # =============================================================================
 
 resource "google_project_service" "required" {
-  for_each = local.all_project_api_pairs
+  for_each = var.enable_project_apis ? local.all_project_api_pairs : {}
 
   project = each.value.project
   service = each.value.service
@@ -34,8 +34,8 @@ resource "google_service_account_key" "castai_discovery" {
 resource "google_organization_iam_member" "castai_discovery" {
   for_each = local.org_role_bindings
 
-  org_id = var.organization_id
-  role   = each.value
+  org_id = each.value.org_id
+  role   = each.value.role
   member = "serviceAccount:${google_service_account.castai_discovery.email}"
 }
 
@@ -56,10 +56,10 @@ resource "google_project_iam_member" "castai_discovery" {
 # =============================================================================
 
 resource "google_organization_iam_custom_role" "castai_discovery" {
-  count = local.has_custom_role && local.is_org_scoped ? 1 : 0
+  for_each = local.custom_role_org_bindings
 
   role_id     = var.custom_role_id
-  org_id      = var.organization_id
+  org_id      = each.value
   title       = "Cast AI Discovery - scope ${var.scope}"
   description = "Custom role for Cast AI to discover GCP resources - scope ${var.scope}"
   permissions = local.custom_role_org_permissions
@@ -75,12 +75,12 @@ resource "google_project_iam_custom_role" "castai_discovery" {
   permissions = local.custom_role_project_permissions
 }
 
-# Bind the custom role at org level
+# Bind the custom role at org level (one binding per org)
 resource "google_organization_iam_member" "castai_custom_role" {
-  count = local.has_custom_role && local.is_org_scoped ? 1 : 0
+  for_each = local.custom_role_org_bindings
 
-  org_id = var.organization_id
-  role   = google_organization_iam_custom_role.castai_discovery[0].id
+  org_id = each.value
+  role   = google_organization_iam_custom_role.castai_discovery[each.key].id
   member = "serviceAccount:${google_service_account.castai_discovery.email}"
 }
 

@@ -27,10 +27,10 @@ variable "project_id" {
   default     = null
 }
 
-variable "organization_id" {
-  description = "GCP organization ID. When set, the module creates organization-level IAM bindings. When empty, falls back to project-level bindings."
-  type        = string
-  default     = ""
+variable "organization_ids" {
+  description = "List of GCP organization IDs. When set, the module creates organization-level IAM bindings. When empty, organizations are auto-discovered; if none found, falls back to project-level bindings."
+  type        = list(string)
+  default     = []
 }
 
 variable "project_ids" {
@@ -40,9 +40,15 @@ variable "project_ids" {
 }
 
 variable "billing_account_ids" {
-  description = "List of GCP billing account IDs for IAM bindings. Only used when organization_id is set."
+  description = "List of GCP billing account IDs for IAM bindings. Only used in org-scoped mode."
   type        = list(string)
   default     = []
+}
+
+variable "enable_project_apis" {
+  description = "Whether to enable required GCP APIs (compute, serviceusage, etc.) in discovered projects. Disable if APIs are managed elsewhere."
+  type        = bool
+  default     = false
 }
 
 variable "service_account_name" {

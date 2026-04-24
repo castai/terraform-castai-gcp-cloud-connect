@@ -9,7 +9,7 @@ module "castai_gcp_integration" {
   castai_organization_id = var.castai_organization_id
 
   project_id          = var.gcp_project_id
-  organization_id     = var.gcp_organization_id
+  organization_ids    = [var.gcp_organization_id]
   billing_account_ids = var.gcp_billing_account_ids
   scope               = "ALL"
 
