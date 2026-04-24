@@ -21,27 +21,11 @@ This Terraform module onboards GCP projects and organizations to [Cast AI Cloud 
 
 ## Deployment modes
 
-### Project-scoped (default)
-
-Binds IAM roles directly to one or more GCP projects. Use this when you don't have organization-level access.
-
-```hcl
-module "castai_gcp_integration" {
-  source = "castai/gcp-cloud-connect/castai"
-
-  castai_api_key         = var.castai_api_key
-  castai_organization_id = var.castai_organization_id
-
-  project_id  = "my-gcp-project"
-  project_ids = ["my-gcp-project", "another-project"]
-}
-```
-
-> **Note:** Without organization-level access, flex CUDs and billing data will not be synced.
-
-### Org-scoped
+### Organization-scoped
 
 Binds IAM roles at the GCP organization level, granting Cast AI visibility across all projects in the organization. Also enables billing account bindings for commitment tracking.
+
+Organizations are auto-discovered by default. Use `organization_ids` to limit bindings to specific organizations.
 
 ```hcl
 module "castai_gcp_integration" {
@@ -51,15 +35,35 @@ module "castai_gcp_integration" {
   castai_organization_id = var.castai_organization_id
 
   project_id          = "my-gcp-project"
-  organization_id     = "123456789"
+  organization_ids    = ["123456789"]  # optional, limits discovery to these orgs
   billing_account_ids = ["AAAAAA-BBBBBB-CCCCCC"]
 }
 ```
 
-| Mode | Variable | IAM binding level | Billing access |
-|------|----------|-------------------|----------------|
-| Project-scoped | `project_ids = [...]` | Project | No |
-| Org-scoped | `organization_id = "..."` | Organization | Yes (with `billing_account_ids`) |
+### Project-scoped
+
+Binds IAM roles directly to one or more GCP projects. This mode is used when `project_ids` is explicitly set, or when no organizations are visible to the caller.
+
+Setting `project_ids` also skips organization discovery. `project_id` (the project where the service account is created) defaults to the google provider's configured project if not set.
+
+```hcl
+module "castai_gcp_integration" {
+  source = "castai/gcp-cloud-connect/castai"
+
+  castai_api_key         = var.castai_api_key
+  castai_organization_id = var.castai_organization_id
+
+  project_id  = "my-gcp-project"              # optional, defaults to provider's project
+  project_ids = ["my-gcp-project", "another-project"]  # optional, limits discovery to these projects
+}
+```
+
+> **Note:** Without organization-level access, flex CUDs and billing data will not be synced.
+
+| Mode | When | IAM binding level | Billing access |
+|------|------|-------------------|----------------|
+| Org-scoped | Organizations discovered or `organization_ids` set | Organization | Yes (with `billing_account_ids`) |
+| Project-scoped | `project_ids` explicitly set, or no organizations found | Project | No |
 
 ## Quick start
 

@@ -3,7 +3,7 @@ data "google_project" "default" {
 }
 
 data "google_organizations" "all" {
-  count = length(var.organization_ids) == 0 ? 1 : 0
+  count = length(var.organization_ids) == 0 && length(var.project_ids) == 0 ? 1 : 0
 }
 
 data "google_projects" "all" {
