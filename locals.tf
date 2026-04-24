@@ -2,7 +2,10 @@ locals {
   sa_project = coalesce(var.project_id, try(data.google_project.default[0].project_id, null))
 
   discovered_org_ids     = try([for o in data.google_organizations.all[0].organizations : o.org_id if o.lifecycle_state == "ACTIVE"], [])
-  discovered_project_ids = try([for p in data.google_projects.all[0].projects : p.project_id], [])
+  discovered_project_ids = try([
+    for p in data.google_projects.all[0].projects : p.project_id
+    if !startswith(p.project_id, "sys-")
+  ], [])
 
   all_org_ids   = length(var.organization_ids) > 0 ? var.organization_ids : local.discovered_org_ids
   is_org_scoped = length(local.all_org_ids) > 0
