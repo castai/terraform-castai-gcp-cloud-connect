@@ -117,6 +117,23 @@ Error: Provider produced inconsistent result after apply
 
 This is a false positive caused by a [bug in the restapi provider](https://github.com/Mastercard/terraform-provider-restapi/pull/359) where the `Update` function doesn't respect `ignore_all_server_changes`. The integration is actually updated correctly on the API side. Running `terraform plan` again will show no pending changes.
 
+## Troubleshooting
+
+**Cloud Connect synchronization fails for some projects**
+
+By default, the module does not enable GCP APIs in discovered projects (`enable_project_apis = false`). This keeps the Terraform plan clean but means the required APIs (`compute.googleapis.com`, `serviceusage.googleapis.com`, etc.) must already be enabled in each project.
+
+If Cloud Connect reports synchronization failures for certain projects, enable API management:
+
+```hcl
+module "castai_gcp_integration" {
+  # ...
+  enable_project_apis = true
+}
+```
+
+This will enable the required APIs in all discovered projects. The first apply may show many resources being created (2 APIs per project, 4 for the service account project), but subsequent plans will be clean.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
