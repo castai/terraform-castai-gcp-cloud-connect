@@ -28,7 +28,7 @@ resource "restapi_object" "castai_integration" {
     provider = "GCP"
     scope    = var.scope
     gcp_service_account_key = {
-      key = base64decode(google_service_account_key.castai_discovery.private_key)
+      key = base64decode(google_service_account_key.castai_cloud_connect.private_key)
     }
     metadata = {
       expectedProjectCount = local.expected_project_count
@@ -56,15 +56,15 @@ resource "restapi_object" "castai_integration" {
 
   lifecycle {
     ignore_changes       = [data]
-    replace_triggered_by = [google_service_account_key.castai_discovery]
+    replace_triggered_by = [google_service_account_key.castai_cloud_connect]
   }
 
   depends_on = [
-    google_organization_iam_member.castai_discovery,
+    google_organization_iam_member.castai_cloud_connect,
     google_organization_iam_member.castai_custom_role,
-    google_project_iam_member.castai_discovery,
+    google_project_iam_member.castai_cloud_connect,
     google_project_iam_member.castai_custom_role,
-    google_billing_account_iam_member.castai_discovery,
+    google_billing_account_iam_member.castai_cloud_connect,
     google_project_service.required,
   ]
 }

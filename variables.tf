@@ -18,7 +18,7 @@ variable "castai_organization_id" {
 variable "integration_name" {
   description = "Name for the cloud asset integration"
   type        = string
-  default     = "GCP discovery"
+  default     = "GCP Cloud Connect"
 }
 
 variable "project_id" {
@@ -54,13 +54,13 @@ variable "enable_project_apis" {
 variable "service_account_name" {
   description = "Name of the GCP service account to create"
   type        = string
-  default     = "castai-discovery"
+  default     = "castai-cloud-connect"
 }
 
 variable "custom_role_id" {
   description = "ID for the custom IAM role. Only used for GCP_COMMITMENTS scope."
   type        = string
-  default     = "castai_discovery_role"
+  default     = "castai_cloud_connect_role"
 }
 
 variable "scope" {

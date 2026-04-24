@@ -12,7 +12,7 @@ module "castai_gcp_integration" {
   project_ids = [var.gcp_project_id]
   scope       = "ALL"
 
-  integration_name = "GCP Discovery via Terraform"
+  integration_name = "GCP Cloud Connect via Terraform"
 }
 
 variable "castai_api_key" {

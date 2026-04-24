@@ -13,7 +13,7 @@ module "castai_gcp_integration" {
   billing_account_ids = var.gcp_billing_account_ids
   scope               = "ALL"
 
-  integration_name = "GCP Org Discovery via Terraform"
+  integration_name = "GCP Cloud Connect via Terraform"
 }
 
 variable "castai_api_key" {
