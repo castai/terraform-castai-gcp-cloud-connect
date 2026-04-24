@@ -75,9 +75,9 @@ variable "scope" {
 }
 
 variable "commitments_default_status" {
-  description = "Default status for imported commitments. One of: ACTIVE, INACTIVE."
+  description = "Default autoscaling status for imported commitments. One of: ACTIVE (commitment will be used for autoscaling), INACTIVE (commitment will not be used for autoscaling)."
   type        = string
-  default     = "INACTIVE"
+  default     = "ACTIVE"
 
   validation {
     condition     = contains(["ACTIVE", "INACTIVE"], var.commitments_default_status)
@@ -88,5 +88,5 @@ variable "commitments_default_status" {
 variable "commitments_auto_assignment" {
   description = "Whether to automatically assign commitments to workloads."
   type        = bool
-  default     = false
+  default     = true
 }
