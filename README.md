@@ -10,15 +10,6 @@
 
 This Terraform module onboards GCP projects and organizations to [Cast AI Cloud Connect](https://cast.ai/) for cloud asset discovery. It is a declarative, auditable, and version-controlled alternative to the shell-based onboarding script.
 
-## What it does
-
-- Enables required GCP APIs in target projects
-- Creates a GCP service account with a JSON key for Cast AI authentication
-- Binds IAM roles at the organization or project level based on the selected scope
-- Creates custom IAM roles when required (GCP_COMMITMENTS scope)
-- Binds billing account roles for commitment and CUD visibility (org-scoped)
-- Registers the integration with the Cast AI API
-
 ## Deployment modes
 
 ### Organization-scoped
