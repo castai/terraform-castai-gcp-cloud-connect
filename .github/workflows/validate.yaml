@@ -52,22 +52,12 @@ jobs:
       - name: Terraform init
         run: terraform init
 
-      - name: Setup terraform-docs
-        run: |
-          curl -sSLo terraform-docs.tar.gz https://github.com/terraform-docs/terraform-docs/releases/download/v0.19.0/terraform-docs-v0.19.0-linux-amd64.tar.gz
-          tar -xzf terraform-docs.tar.gz terraform-docs
-          sudo mv terraform-docs /usr/local/bin/
-          terraform-docs --version
-
-      - name: Check docs are up to date
-        run: |
-          make generate-doc
-          git diff README.md
-          if [ -n "$(git status --porcelain README.md)" ]; then
-            echo "ERROR: README.md is out of date. Run 'make generate-doc' locally and commit the changes."
-            exit 1
-          fi
-          echo "README.md is up to date."
+      - name: Generate docs
+        uses: terraform-docs/gh-actions@v1
+        with:
+          output-file: README.md
+          output-method: inject
+          fail-on-diff: true
 
   tflint:
     runs-on: ubuntu-latest
