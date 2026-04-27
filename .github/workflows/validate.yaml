@@ -49,6 +49,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v4
+
+      - name: Terraform init
+        run: terraform init
+
       - name: Setup terraform-docs
         run: |
           curl -sSLo terraform-docs.tar.gz https://github.com/terraform-docs/terraform-docs/releases/download/v0.19.0/terraform-docs-v0.19.0-linux-amd64.tar.gz
