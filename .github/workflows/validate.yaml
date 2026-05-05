@@ -57,7 +57,7 @@ jobs:
         with:
           output-file: README.md
           output-method: inject
-          fail-on-diff: true
+          git-push: true
 
   tflint:
     runs-on: ubuntu-latest
