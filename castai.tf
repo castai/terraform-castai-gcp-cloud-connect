@@ -35,8 +35,8 @@ resource "restapi_object" "castai_integration" {
     }
     settings = {
       commitments = {
-        defaultStatus  = var.commitments_default_status
-        autoAssignment = var.commitments_auto_assignment
+        defaultStatus       = var.commitments_default_status
+        assignAutomatically = var.commitments_auto_assignment
       }
     }
   })
@@ -48,8 +48,8 @@ resource "restapi_object" "castai_integration" {
     name    = var.integration_name
     settings = {
       commitments = {
-        defaultStatus  = var.commitments_default_status
-        autoAssignment = var.commitments_auto_assignment
+        defaultStatus       = var.commitments_default_status
+        assignAutomatically = var.commitments_auto_assignment
       }
     }
   })
