@@ -18,8 +18,6 @@ resource "restapi_object" "castai_integration" {
 
   update_method = "PATCH"
 
-  ignore_all_server_changes = true
-
   # Full payload including the SA key — used only for the initial POST.
   # ignore_changes = [data] prevents the sensitive key from causing plan diffs.
   data = jsonencode({
