@@ -23,7 +23,7 @@ resource "restapi_object" "castai_integration" {
   # Full payload including the SA key — used only for the initial POST.
   # ignore_changes = [data] prevents the sensitive key from causing plan diffs.
   data = jsonencode({
-    enabled  = true
+    enabled  = var.integration_enabled
     name     = var.integration_name
     provider = "GCP"
     scope    = var.scope
@@ -44,7 +44,7 @@ resource "restapi_object" "castai_integration" {
   # Mutable fields only — used for PATCH updates. Changes here trigger plan diffs
   # without exposing the SA key.
   update_data = jsonencode({
-    enabled = true
+    enabled = var.integration_enabled
     name    = var.integration_name
     settings = {
       commitments = {

@@ -134,7 +134,7 @@ This will enable the required APIs in all discovered projects. The first apply m
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5 |
 | <a name="requirement_google"></a> [google](#requirement\_google) | >= 4.0 |
 | <a name="requirement_http"></a> [http](#requirement\_http) | >= 3.0 |
 | <a name="requirement_restapi"></a> [restapi](#requirement\_restapi) | >= 2.0 |
@@ -183,6 +183,7 @@ No modules.
 | <a name="input_commitments_default_status"></a> [commitments\_default\_status](#input\_commitments\_default\_status) | Default autoscaling status for imported commitments. One of: ACTIVE (commitment will be used for autoscaling), INACTIVE (commitment will not be used for autoscaling). | `string` | `"ACTIVE"` | no |
 | <a name="input_custom_role_id"></a> [custom\_role\_id](#input\_custom\_role\_id) | ID for the custom IAM role. Only used for GCP\_COMMITMENTS scope. | `string` | `"castai_cloud_connect_role"` | no |
 | <a name="input_enable_project_apis"></a> [enable\_project\_apis](#input\_enable\_project\_apis) | If true, the module will enable the necessary APIs for the projects. Defaults to false assuming that APIs are managed elsewhere not to create noise in the plan. | `bool` | `false` | no |
+| <a name="input_integration_enabled"></a> [integration\_enabled](#input\_integration\_enabled) | Whether the cloud asset integration is enabled. If set to false, the integration will remain configured but will not actively process data until re-enabled. | `bool` | `true` | no |
 | <a name="input_integration_name"></a> [integration\_name](#input\_integration\_name) | Name for the cloud asset integration | `string` | `"GCP Cloud Connect"` | no |
 | <a name="input_organization_ids"></a> [organization\_ids](#input\_organization\_ids) | List of GCP organization IDs. When set, the module creates organization-level IAM bindings. When empty, organizations are auto-discovered; if none found, falls back to project-level bindings. | `list(string)` | `[]` | no |
 | <a name="input_project_id"></a> [project\_id](#input\_project\_id) | GCP project ID where the service account will be created. Defaults to the google provider's configured project. | `string` | `null` | no |

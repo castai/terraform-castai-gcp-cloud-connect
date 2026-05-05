@@ -90,3 +90,9 @@ variable "commitments_auto_assignment" {
   type        = bool
   default     = true
 }
+
+variable "integration_enabled" {
+  description = "Whether the cloud asset integration is enabled. If set to false, the integration will remain configured but will not actively process data until re-enabled."
+  type        = bool
+  default     = true
+}
