@@ -26,6 +26,13 @@ check "onboarding_config_status" {
   }
 }
 
+check "sa_project_is_set" {
+  assert {
+    condition     = local.sa_project != null
+    error_message = "Unable to determine project for service account creation. Either set 'project_id' variable or configure a default project in the google provider."
+  }
+}
+
 check "has_projects" {
   assert {
     condition     = length(local.all_project_ids) > 0
