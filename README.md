@@ -122,7 +122,7 @@ This will enable the required APIs in all discovered projects. The first apply m
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5 |
 | <a name="requirement_google"></a> [google](#requirement\_google) | >= 4.0 |
 | <a name="requirement_http"></a> [http](#requirement\_http) | >= 3.0 |
@@ -131,7 +131,7 @@ This will enable the required APIs in all discovered projects. The first apply m
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_google"></a> [google](#provider\_google) | 7.29.0 |
 | <a name="provider_http"></a> [http](#provider\_http) | 3.5.0 |
 | <a name="provider_restapi"></a> [restapi](#provider\_restapi) | 3.0.0 |
@@ -143,7 +143,7 @@ No modules.
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [google_billing_account_iam_member.castai_cloud_connect](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/billing_account_iam_member) | resource |
 | [google_organization_iam_custom_role.castai_cloud_connect](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/organization_iam_custom_role) | resource |
 | [google_organization_iam_member.castai_cloud_connect](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/organization_iam_member) | resource |
@@ -163,7 +163,7 @@ No modules.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_billing_account_ids"></a> [billing\_account\_ids](#input\_billing\_account\_ids) | List of GCP billing account IDs for IAM bindings. Only used in org-scoped mode. | `list(string)` | `[]` | no |
 | <a name="input_castai_api_key"></a> [castai\_api\_key](#input\_castai\_api\_key) | Cast AI API key | `string` | n/a | yes |
 | <a name="input_castai_api_url"></a> [castai\_api\_url](#input\_castai\_api\_url) | Cast AI API URL | `string` | `"https://api.cast.ai"` | no |
@@ -183,7 +183,7 @@ No modules.
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_custom_role_ids"></a> [custom\_role\_ids](#output\_custom\_role\_ids) | IDs of the custom IAM roles (empty if not created) |
 | <a name="output_integration_id"></a> [integration\_id](#output\_integration\_id) | ID of the Cast AI cloud asset integration |
 | <a name="output_is_org_scoped"></a> [is\_org\_scoped](#output\_is\_org\_scoped) | Whether this is an organization-scoped integration |
