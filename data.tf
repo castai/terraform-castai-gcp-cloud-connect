@@ -33,6 +33,13 @@ check "sa_project_is_set" {
   }
 }
 
+check "org_ids_and_project_ids_conflict" {
+  assert {
+    condition     = length(var.organization_ids) == 0 || length(var.project_ids) == 0
+    error_message = "Cannot set both 'organization_ids' and 'project_ids' at the same time. Use one or the other - they represent mutually exclusive modes (organization-scoped vs project-scoped)."
+  }
+}
+
 check "has_projects" {
   assert {
     condition     = length(local.all_project_ids) > 0
