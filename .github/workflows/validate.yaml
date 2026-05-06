@@ -1,0 +1,98 @@
+name: Validate and lint
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  terraform_validation:
+    strategy:
+      matrix:
+        version: ["1.11", latest]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ matrix.version }}
+
+      - name: Terraform init
+        run: "terraform init || terraform init -upgrade"
+
+      - name: Terraform validate
+        run: "terraform validate"
+
+      - name: Terraform fmt
+        run: |
+          terraform fmt
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "ERROR: terraform fmt resulted in changes. Run 'terraform fmt' locally and append the changes."
+            echo
+            git diff
+            echo
+            git status
+            exit 1
+          fi
+
+  docs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v4
+
+      - name: Terraform init
+        run: terraform init
+
+      - name: Generate docs
+        uses: terraform-docs/gh-actions@v1
+        with:
+          output-file: README.md
+          output-method: inject
+          fail-on-diff: false
+          git-push: true
+          git-push-user-name: "github-actions[bot]"
+          git-push-user-email: "41898282+github-actions[bot]@users.noreply.github.com"
+          git-commit-message: "chore(docs): update terraform docs"
+
+  tflint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v6
+
+      - name: Cache plugin dir
+        uses: actions/cache@v5
+        with:
+          path: ~/.tflint.d/plugins
+          key: tflint-${{ hashFiles('.tflint.hcl') }}
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v1
+        with:
+          tflint_version: v0.60.0
+
+      - name: Show version
+        run: tflint --version
+
+      - name: Init TFLint
+        run: tflint --init
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Run TFLint
+        run: tflint -f compact
