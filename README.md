@@ -143,7 +143,7 @@ This will enable the required APIs in all discovered projects. The first apply m
 
 | Name | Version |
 |------|---------|
-| <a name="provider_google"></a> [google](#provider\_google) | 7.30.0 |
+| <a name="provider_google"></a> [google](#provider\_google) | 7.31.0 |
 | <a name="provider_http"></a> [http](#provider\_http) | 3.5.0 |
 | <a name="provider_restapi"></a> [restapi](#provider\_restapi) | 3.0.0 |
 
