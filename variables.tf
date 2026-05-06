@@ -40,7 +40,13 @@ variable "project_ids" {
 }
 
 variable "billing_account_ids" {
-  description = "List of GCP billing account IDs for IAM bindings. Only used in org-scoped mode."
+  description = <<EOT
+List of GCP billing account IDs for IAM bindings. Only used in org-scoped mode.
+
+Note: The Google Terraform provider does not support listing/discovering billing accounts
+(the google_billing_account data source only retrieves a single account by ID or display name).
+Therefore, billing account IDs must be provided explicitly by the module user.
+EOT
   type        = list(string)
   default     = []
 }

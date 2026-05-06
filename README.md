@@ -174,8 +174,13 @@ No modules.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
+<<<<<<< HEAD
 |------|-------------|------|---------|:--------:|
 | <a name="input_billing_account_ids"></a> [billing\_account\_ids](#input\_billing\_account\_ids) | List of GCP billing account IDs for IAM bindings. Only used in org-scoped mode. | `list(string)` | `[]` | no |
+=======
+| ---- | ----------- | ---- | ------- | :------: |
+| <a name="input_billing_account_ids"></a> [billing\_account\_ids](#input\_billing\_account\_ids) | List of GCP billing account IDs for IAM bindings. Only used in org-scoped mode.<br/><br/>Note: The Google Terraform provider does not support listing/discovering billing accounts<br/>(the google\_billing\_account data source only retrieves a single account by ID or display name).<br/>Therefore, billing account IDs must be provided explicitly by the module user. | `list(string)` | `[]` | no |
+>>>>>>> 6c24cac (add comment for billing_account_ids)
 | <a name="input_castai_api_key"></a> [castai\_api\_key](#input\_castai\_api\_key) | Cast AI API key | `string` | n/a | yes |
 | <a name="input_castai_api_url"></a> [castai\_api\_url](#input\_castai\_api\_url) | Cast AI API URL | `string` | `"https://api.cast.ai"` | no |
 | <a name="input_castai_organization_id"></a> [castai\_organization\_id](#input\_castai\_organization\_id) | Cast AI organization ID | `string` | n/a | yes |
