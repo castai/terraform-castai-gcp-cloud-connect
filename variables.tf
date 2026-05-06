@@ -74,6 +74,12 @@ variable "scope" {
   }
 }
 
+variable "force_project_scope" {
+  description = "When true, forces project-scoped IAM bindings even if organizations are discoverable. This creates explicit project-level bindings instead of organization-level bindings."
+  type        = bool
+  default     = false
+}
+
 variable "commitments_default_status" {
   description = "Default autoscaling status for imported commitments. One of: ACTIVE (commitment will be used for autoscaling), INACTIVE (commitment will not be used for autoscaling)."
   type        = string

@@ -4,11 +4,12 @@ locals {
   discovered_org_ids = try([for o in data.google_organizations.all[0].organizations : o.org_id if o.lifecycle_state == "ACTIVE"], [])
   discovered_project_ids = try([
     for p in data.google_projects.all[0].projects : p.project_id
-    if !startswith(p.project_id, "sys-")
+    if !startswith(p.project_id, "sys-") && try(p.parent.display_name, "") != "apps-script"
   ], [])
 
-  all_org_ids   = length(var.organization_ids) > 0 ? var.organization_ids : local.discovered_org_ids
-  is_org_scoped = length(local.all_org_ids) > 0
+  all_org_ids = length(var.organization_ids) > 0 ? var.organization_ids : local.discovered_org_ids
+  # Respect force_project_scope to bypass org-scoped mode even when orgs are discoverable
+  is_org_scoped = !var.force_project_scope && length(local.all_org_ids) > 0
 
   # When project_ids is empty, discover all active projects visible to the caller.
   # SA project is always included.
