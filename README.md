@@ -122,7 +122,7 @@ This will enable the required APIs in all discovered projects. The first apply m
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.7 |
 | <a name="requirement_google"></a> [google](#requirement\_google) | >= 7.0 |
 | <a name="requirement_http"></a> [http](#requirement\_http) | >= 3.0 |
 | <a name="requirement_restapi"></a> [restapi](#requirement\_restapi) | >= 3.0 |
@@ -131,8 +131,8 @@ This will enable the required APIs in all discovered projects. The first apply m
 
 | Name | Version |
 |------|---------|
-| <a name="provider_google"></a> [google](#provider\_google) | 7.31.0 |
-| <a name="provider_http"></a> [http](#provider\_http) | 3.5.0 |
+| <a name="provider_google"></a> [google](#provider\_google) | 8.8.1 |
+| <a name="provider_http"></a> [http](#provider\_http) | 3.6.3 |
 | <a name="provider_restapi"></a> [restapi](#provider\_restapi) | 3.0.0 |
 
 ## Modules
@@ -152,7 +152,7 @@ No modules.
 | [google_project_iam_member.castai_custom_role](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/project_iam_member) | resource |
 | [google_project_service.required](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/project_service) | resource |
 | [google_service_account.castai_cloud_connect](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account) | resource |
-| [google_service_account_key.castai_cloud_connect](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account_key) | resource |
+| [google_service_account_iam_member.castai_identity_token_creator](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account_iam_member) | resource |
 | [restapi_object.castai_integration](https://registry.terraform.io/providers/Mastercard/restapi/latest/docs/resources/object) | resource |
 | [google_organizations.all](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/organizations) | data source |
 | [google_project.default](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/project) | data source |
