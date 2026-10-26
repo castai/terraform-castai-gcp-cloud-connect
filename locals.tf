@@ -22,6 +22,10 @@ locals {
   org_roles     = try(local.onboarding_config.gcpConfig.organizationRoles, [])
   project_roles = try(local.onboarding_config.gcpConfig.projectRoles, [])
 
+  # Email of the Cast AI identity service account (provisioned per organization by
+  # the Cast AI API) that must be able to impersonate the discovery service account.
+  cast_identity_sa_email = try(local.onboarding_config.gcpConfig.castServiceAccountEmail, "")
+
   # Custom role permissions from API (only for GCP_COMMITMENTS scope)
   custom_role_org_permissions     = try(local.onboarding_config.gcpConfig.customRoleOrgPermissions, [])
   custom_role_project_permissions = try(local.onboarding_config.gcpConfig.customRoleProjectPermissions, [])

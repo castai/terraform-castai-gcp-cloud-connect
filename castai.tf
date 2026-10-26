@@ -18,15 +18,18 @@ resource "restapi_object" "castai_integration" {
 
   update_method = "PATCH"
 
-  # Full payload including the SA key — used only for the initial POST.
-  # ignore_changes = [data] prevents the sensitive key from causing plan diffs.
+  # Full payload — used only for the initial POST. The Cast AI identity SA email
+  # comes from the onboarding config; no key material is involved.
+  # ignore_changes = [data] keeps the integration from being re-created on
+  # unrelated payload drift.
   data = jsonencode({
     enabled  = var.integration_enabled
     name     = var.integration_name
     provider = "GCP"
     scope    = var.scope
-    gcp_service_account_key = {
-      key = base64decode(google_service_account_key.castai_cloud_connect.private_key)
+    gcp_impersonation_credentials = {
+      target_service_account     = google_service_account.castai_cloud_connect.email
+      cast_service_account_email = local.cast_identity_sa_email
     }
     metadata = {
       expectedProjectCount = local.expected_project_count
@@ -39,11 +42,17 @@ resource "restapi_object" "castai_integration" {
     }
   })
 
-  # Mutable fields only — used for PATCH updates. Changes here trigger plan diffs
-  # without exposing the SA key.
+  # Mutable fields only — used for PATCH updates. The credentials are included
+  # so that upgrading from an older module version PATCHes a legacy key-based
+  # integration over to impersonation in place (no re-create, stable
+  # integration_id). Requires a Cast AI API with credential-update support.
   update_data = jsonencode({
     enabled = var.integration_enabled
     name    = var.integration_name
+    gcp_impersonation_credentials = {
+      target_service_account     = google_service_account.castai_cloud_connect.email
+      cast_service_account_email = local.cast_identity_sa_email
+    }
     settings = {
       commitments = {
         defaultStatus       = var.commitments_default_status
@@ -53,8 +62,9 @@ resource "restapi_object" "castai_integration" {
   })
 
   lifecycle {
-    ignore_changes       = [data]
-    replace_triggered_by = [google_service_account_key.castai_cloud_connect]
+    # The API does not echo credentials in its responses — ignoring data
+    # prevents perpetual plan diffs against the response body.
+    ignore_changes = [data]
   }
 
   depends_on = [
@@ -63,6 +73,7 @@ resource "restapi_object" "castai_integration" {
     google_project_iam_member.castai_cloud_connect,
     google_project_iam_member.castai_custom_role,
     google_billing_account_iam_member.castai_cloud_connect,
+    google_service_account_iam_member.castai_identity_token_creator,
     google_project_service.required,
   ]
 }

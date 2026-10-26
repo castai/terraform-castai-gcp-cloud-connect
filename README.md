@@ -152,7 +152,7 @@ No modules.
 | [google_project_iam_member.castai_custom_role](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/project_iam_member) | resource |
 | [google_project_service.required](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/project_service) | resource |
 | [google_service_account.castai_cloud_connect](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account) | resource |
-| [google_service_account_key.castai_cloud_connect](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account_key) | resource |
+| [google_service_account_iam_member.castai_identity_token_creator](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account_iam_member) | resource |
 | [restapi_object.castai_integration](https://registry.terraform.io/providers/Mastercard/restapi/latest/docs/resources/object) | resource |
 | [google_organizations.all](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/organizations) | data source |
 | [google_project.default](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/project) | data source |

@@ -23,8 +23,32 @@ resource "google_service_account" "castai_cloud_connect" {
   depends_on = [google_project_service.required]
 }
 
-resource "google_service_account_key" "castai_cloud_connect" {
+# Allow the Cast AI identity service account (provisioned per organization by
+# the Cast AI API) to mint tokens for the discovery service account. This
+# replaces the former static SA key: Cast AI impersonates the discovery SA
+# through its identity SA instead of holding key material.
+resource "google_service_account_iam_member" "castai_identity_token_creator" {
   service_account_id = google_service_account.castai_cloud_connect.name
+  role               = "roles/iam.serviceAccountTokenCreator"
+  member             = "serviceAccount:${local.cast_identity_sa_email}"
+
+  lifecycle {
+    precondition {
+      condition     = local.cast_identity_sa_email != ""
+      error_message = "Onboarding config did not return castServiceAccountEmail. Upgrade the Cast AI API to a version with GCP impersonation support."
+    }
+  }
+}
+
+# Keep keys created by older module versions alive on upgrade: integrations
+# registered with a static key keep syncing with it, so destroying the key
+# here would break them. Delete the key manually after migrating.
+removed {
+  from = google_service_account_key.castai_cloud_connect
+
+  lifecycle {
+    destroy = false
+  }
 }
 
 # =============================================================================
