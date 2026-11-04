@@ -100,6 +100,27 @@ module "castai_gcp_integration" {
 }
 ```
 
+## Migrating from static service account keys
+
+Integrations first onboarded by an older module version authenticate with a static service account key. Applying this module version migrates such an integration **in place**: the Cast AI identity service account is granted permission to impersonate the discovery service account, and the integration is updated via an API patch — same integration ID, no synchronization gap, no key material involved.
+
+The old static key is deliberately **not deleted**. The credential switch happens through an API update, and Terraform cannot order a key deletion to run only after that update succeeded — a failed or interrupted apply must never leave the integration without working credentials. Instead, the key resource is removed from Terraform state and left alive in GCP (`removed` block with `destroy = false`).
+
+Once the integration is verified to sync via impersonation, retire the old key manually:
+
+```sh
+gcloud iam service-accounts keys list \
+  --iam-account="castai-cloud-connect@my-gcp-project.iam.gserviceaccount.com" \
+  --project="my-gcp-project" \
+  --filter="keyType:USER_MANAGED" --format="value(name)"
+
+gcloud iam service-accounts keys delete <KEY_ID> \
+  --iam-account="castai-cloud-connect@my-gcp-project.iam.gserviceaccount.com" \
+  --project="my-gcp-project"
+```
+
+Note that rolling back to a key-based module version does not switch back in place: the Cast AI update endpoint only accepts impersonation credentials. To return to static keys, delete the integration and create a new one with the old module version.
+
 ## Troubleshooting
 
 **Cloud Connect synchronization fails for some projects**
@@ -122,7 +143,7 @@ This will enable the required APIs in all discovered projects. The first apply m
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.7 |
 | <a name="requirement_google"></a> [google](#requirement\_google) | >= 7.0 |
 | <a name="requirement_http"></a> [http](#requirement\_http) | >= 3.0 |
 | <a name="requirement_restapi"></a> [restapi](#requirement\_restapi) | >= 3.0 |
@@ -131,8 +152,8 @@ This will enable the required APIs in all discovered projects. The first apply m
 
 | Name | Version |
 |------|---------|
-| <a name="provider_google"></a> [google](#provider\_google) | 7.31.0 |
-| <a name="provider_http"></a> [http](#provider\_http) | 3.5.0 |
+| <a name="provider_google"></a> [google](#provider\_google) | 8.10.0 |
+| <a name="provider_http"></a> [http](#provider\_http) | 3.6.3 |
 | <a name="provider_restapi"></a> [restapi](#provider\_restapi) | 3.0.0 |
 
 ## Modules
@@ -152,7 +173,7 @@ No modules.
 | [google_project_iam_member.castai_custom_role](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/project_iam_member) | resource |
 | [google_project_service.required](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/project_service) | resource |
 | [google_service_account.castai_cloud_connect](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account) | resource |
-| [google_service_account_key.castai_cloud_connect](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account_key) | resource |
+| [google_service_account_iam_member.castai_identity_token_creator](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account_iam_member) | resource |
 | [restapi_object.castai_integration](https://registry.terraform.io/providers/Mastercard/restapi/latest/docs/resources/object) | resource |
 | [google_organizations.all](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/organizations) | data source |
 | [google_project.default](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/project) | data source |
