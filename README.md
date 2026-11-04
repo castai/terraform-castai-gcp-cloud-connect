@@ -100,6 +100,29 @@ module "castai_gcp_integration" {
 }
 ```
 
+## Migrating from static service account keys
+
+Integrations first onboarded by an older module version authenticate with a static service account key. Applying this module version migrates such an integration **in place**: the Cast AI identity service account is granted permission to impersonate the discovery service account, and the integration is updated via an API patch — same integration ID, no synchronization gap, no key material involved.
+
+The old static key is deliberately **not deleted**. The credential switch happens through an API update, and Terraform cannot order a key deletion to run only after that update succeeded — a failed or interrupted apply must never leave the integration without working credentials. Instead, the key resource is removed from Terraform state and left alive in GCP (`removed` block with `destroy = false`).
+
+Once the integration is verified to sync via impersonation, retire the old key manually:
+
+```sh
+gcloud iam service-accounts keys list \
+  --iam-account="castai-cloud-connect@my-gcp-project.iam.gserviceaccount.com" \
+  --project="my-gcp-project" \
+  --filter="keyType:USER_MANAGED" --format="value(name)"
+
+gcloud iam service-accounts keys delete <KEY_ID> \
+  --iam-account="castai-cloud-connect@my-gcp-project.iam.gserviceaccount.com" \
+  --project="my-gcp-project"
+```
+
+The same instructions are emitted as the `static_key_retirement` output after every apply.
+
+Note that rolling back to a key-based module version does not switch back in place: the Cast AI update endpoint only accepts impersonation credentials. To return to static keys, delete the integration and create a new one with the old module version.
+
 ## Troubleshooting
 
 **Cloud Connect synchronization fails for some projects**
@@ -121,7 +144,7 @@ This will enable the required APIs in all discovered projects. The first apply m
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.7 |
 | <a name="requirement_google"></a> [google](#requirement\_google) | >= 7.0 |
 | <a name="requirement_http"></a> [http](#requirement\_http) | >= 3.0 |
@@ -130,9 +153,9 @@ This will enable the required APIs in all discovered projects. The first apply m
 ## Providers
 
 | Name | Version |
-|------|---------|
-| <a name="provider_google"></a> [google](#provider\_google) | 8.8.1 |
-| <a name="provider_http"></a> [http](#provider\_http) | 3.6.3 |
+| ---- | ------- |
+| <a name="provider_google"></a> [google](#provider\_google) | 7.29.0 |
+| <a name="provider_http"></a> [http](#provider\_http) | 3.5.0 |
 | <a name="provider_restapi"></a> [restapi](#provider\_restapi) | 3.0.0 |
 
 ## Modules
@@ -142,7 +165,7 @@ No modules.
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [google_billing_account_iam_member.castai_cloud_connect](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/billing_account_iam_member) | resource |
 | [google_organization_iam_custom_role.castai_cloud_connect](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/organization_iam_custom_role) | resource |
 | [google_organization_iam_member.castai_cloud_connect](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/organization_iam_member) | resource |
@@ -162,7 +185,7 @@ No modules.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_billing_account_ids"></a> [billing\_account\_ids](#input\_billing\_account\_ids) | List of GCP billing account IDs for IAM bindings. Only used in org-scoped mode.<br/><br/>Note: The Google Terraform provider does not support listing/discovering billing accounts<br/>(the google\_billing\_account data source only retrieves a single account by ID or display name).<br/>Therefore, billing account IDs must be provided explicitly by the module user. | `list(string)` | `[]` | no |
 | <a name="input_castai_api_key"></a> [castai\_api\_key](#input\_castai\_api\_key) | Cast AI API key | `string` | n/a | yes |
 | <a name="input_castai_api_url"></a> [castai\_api\_url](#input\_castai\_api\_url) | Cast AI API URL | `string` | `"https://api.cast.ai"` | no |
@@ -183,10 +206,11 @@ No modules.
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_custom_role_ids"></a> [custom\_role\_ids](#output\_custom\_role\_ids) | IDs of the custom IAM roles (empty if not created) |
 | <a name="output_integration_id"></a> [integration\_id](#output\_integration\_id) | ID of the Cast AI cloud asset integration |
 | <a name="output_is_org_scoped"></a> [is\_org\_scoped](#output\_is\_org\_scoped) | Whether this is an organization-scoped integration |
 | <a name="output_service_account_email"></a> [service\_account\_email](#output\_service\_account\_email) | Email of the GCP service account created for Cast AI |
 | <a name="output_service_account_id"></a> [service\_account\_id](#output\_service\_account\_id) | Fully qualified ID of the GCP service account |
+| <a name="output_static_key_retirement"></a> [static\_key\_retirement](#output\_static\_key\_retirement) | Manual step for integrations previously registered with a static service account key (module versions before SA impersonation) |
 <!-- END_TF_DOCS -->
